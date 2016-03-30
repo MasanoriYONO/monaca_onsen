@@ -12,6 +12,18 @@
         ons.bootstrap();
         ons.ready(function(){
             console.log("Page init.");
+            
+            myNavigator.on('postpush', function(e) {
+                console.log("postpush.");
+                // オブジェクトのメンバを調べる。
+                for(var i in e.enterPage){
+            		console.log(i + ":" + e.enterPage[i]);
+            	}
+            	
+            	$(e.enterPage.element).find("#page2_title").empty();
+            	$(e.enterPage.element).find("#page2_title").text("テスト 1->2(postpush)");
+            	
+            });
         });
         
         function page1to2(){
