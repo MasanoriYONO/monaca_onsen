@@ -7,8 +7,79 @@
     <script src="components/loader.js"></script>
     <link rel="stylesheet" href="components/loader.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
         ons.bootstrap();
+        ons.ready(function(){
+            console.log("Page init.");
+            
+            myNavigator.on('postpush', function(e) {
+                console.log("postpush.");
+                // オブジェクトのメンバを調べる。
+                for(var i in e.enterPage){
+            		console.log(i + ":" + e.enterPage[i]);
+            	}
+            	
+            	if(e.enterPage.name == "page2.html"){
+                    $(e.enterPage.element).find("#page2_title").empty();
+                    $(e.enterPage.element).find("#page2_title").text("テスト 1->2(postpush)");
+                }
+                if(e.enterPage.name == "page3.html"){
+                    $(e.enterPage.element).find("#page3_title").empty();
+                    $(e.enterPage.element).find("#page3_title").text("テスト 2->3(postpush)");
+                }
+            }); 
+            
+            myNavigator.on('prepop', function(e) {
+                // オブジェクトのメンバを調べる。
+                console.log("prepop.");
+                for(var i in e.enterPage){
+                    console.log(i + ":" + e.enterPage[i]);
+                }
+                if(e.enterPage.name == "page1.html"){
+                    $("#page2_title").text("テスト 1->2(prepop)");
+                    alert("page1へ戻りますか？");
+                }
+                
+                if(e.enterPage.name == "page2.html"){
+                    $("#page3_title").text("テスト 2->3(prepop)");
+                    alert("page2へ戻りますか？");
+                }
+            });
+        });
+        
+        function page1to2(){
+            var options = {title:"テスト 1->2"};
+            myNavigator.pushPage('page2.html', options);
+        	// これはDOMに積み上がっていないので動かないコード。
+        	$("#page2_title").text("テスト2");
+        }
+        
+        function page2to3(){
+            // これはDOMに積み上がっているので動くコード。
+            $("#page2_title").text("テスト2");
+            
+            var options = {title:"テスト 2->3"};
+            // myNavigator.pushPage('page2.html');
+            myNavigator.pushPage('page3.html',options);
+            
+        }
+        
+        $(document).on('pageinit', '#page1', function(event) {
+            console.log("pageinit page1.");
+        });
+        
+        $(document).on('pageinit', '#page2', function(event) {
+            console.log("pageinit page2.");
+            var page = myNavigator.getCurrentPage();
+            $("#page2_title").text(page.options.title + "(pageinit)");
+        });
+        
+        $(document).on('pageinit', '#page3', function(event) {
+            console.log("pageinit page3.");
+            var page = myNavigator.getCurrentPage();
+            $("#page3_title").text(page.options.title + "(pageinit)");
+        });
     </script>
 </head>
 <body>
