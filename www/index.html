@@ -16,10 +16,20 @@
         
         function page1to2(){
             var options = {title:"テスト 1->2"};
-            myNavigator.pushPage('page2.html');
+            myNavigator.pushPage('page2.html', options);
         	// これはDOMに積み上がっていないので動かないコード。
         	$("#page2_title").text("テスト2");
         }
+        
+        $(document).on('pageinit', '#page1', function(event) {
+            console.log("pageinit page1.");
+        });
+        
+        $(document).on('pageinit', '#page2', function(event) {
+            console.log("pageinit page2.");
+            var page = myNavigator.getCurrentPage();
+            $("#page2_title").text(page.options.title + "(pageinit)");
+        });
     </script>
 </head>
 <body>
